@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitCoach Pro — Multiplica tus Clientes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── VARIABLES ─────────────────────────────────────────── */
+    :root {
+      --orange: #FF5E00;
+      --orange-hot: #FF8533;
+      --black: #0A0A0A;
+      --dark: #111111;
+      --card: #181818;
+      --text: #F0EDE8;
+      --muted: #999;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'Barlow', sans-serif;
+      --radius: 10px;
+      --max: 780px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ─── TOP BAR ───────────────────────────────────────────── */
+    .topbar {
+      background: var(--orange);
+      text-align: center;
+      padding: 10px 20px;
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      color: #fff;
+      text-transform: uppercase;
+    }
+    .topbar span { opacity: 0.85; }
+
+    /* ─── HERO ──────────────────────────────────────────────── */
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 52px 20px 0;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,94,0,0.15);
+      border: 1px solid rgba(255,94,0,0.4);
+      color: var(--orange-hot);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 16px;
+      border-radius: 40px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 9vw, 82px);
+      line-height: 1;
+      letter-spacing: 0.01em;
+      margin-bottom: 22px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--orange);
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      color: #ccc;
+      max-width: 560px;
+      margin: 0 auto 36px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-sub strong { color: var(--text); }
+
+    /* ─── VIDEO SECTION ─────────────────────────────────────── */
+    .video-wrap {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 20px;
+      animation: fadeUp 0.7s 0.35s ease both;
+    }
+
+    .video-outer {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      box-shadow:
+        0 0 0 1px rgba(255,94,0,0.25),
+        0 32px 80px rgba(0,0,0,0.7),
+        0 0 60px rgba(255,94,0,0.08);
+    }
+
+    /* 16:9 ratio */
+    .video-ratio {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+    }
+
+    video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      /* disable right-click download */
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    /* Custom controls overlay */
+    .video-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px 14px 12px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85) 80%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+      transition: opacity 0.3s;
+    }
+
+    .video-outer:hover .video-controls,
+    .video-outer.show-controls .video-controls { opacity: 1; }
+
+    /* Play/pause btn */
+    .btn-play {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      background: var(--orange);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-play:hover { background: var(--orange-hot); transform: scale(1.08); }
+    .btn-play svg { width: 14px; height: 14px; fill: #fff; }
+
+    /* Progress bar */
+    .progress-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      /* DISABLE seeking via pointer events — JS also blocks it */
+      pointer-events: none;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s linear;
+    }
+
+    /* Time */
+    .video-time {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Volume btn */
+    .btn-vol {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.7);
+      display: flex;
+      align-items: center;
+      padding: 0;
+      transition: color 0.2s;
+    }
+    .btn-vol:hover { color: #fff; }
+    .btn-vol svg { width: 20px; height: 20px; }
+
+    /* Big play overlay (before first play) */
+    .play-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: rgba(0,0,0,0.45);
+      cursor: pointer;
+      z-index: 9;
+      transition: opacity 0.3s;
+    }
+    .play-overlay.hidden { opacity: 0; pointer-events: none; }
+
+    .play-big-btn {
+      width: 72px;
+      height: 72px;
+      background: var(--orange);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 0 10px rgba(255,94,0,0.2), 0 0 0 22px rgba(255,94,0,0.08);
+      animation: pulse 2s ease infinite;
+      transition: transform 0.2s;
+    }
+    .play-overlay:hover .play-big-btn { transform: scale(1.1); }
+    .play-big-btn svg { width: 28px; height: 28px; fill: #fff; margin-left: 4px; }
+
+    .play-label {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    }
+
+    /* Thumbnail / poster placeholder */
+    .video-thumb {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(160deg, #1a1a1a 0%, #0d0d0d 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .video-thumb .thumb-inner {
+      text-align: center;
+      opacity: 0.4;
+    }
+    .video-thumb .thumb-inner svg {
+      width: 64px; height: 64px; fill: none; stroke: #fff; stroke-width: 1.2;
+    }
+
+    /* ─── BELOW VIDEO ────────────────────────────────────────── */
+    .below-video {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 32px 20px 0;
+      text-align: center;
+    }
+
+    .video-caption {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    /* ─── CTA BUTTON ─────────────────────────────────────────── */
+    .cta-wrap {
+      animation: fadeUp 0.7s 0.5s ease both;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--orange);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: clamp(22px, 4vw, 30px);
+      letter-spacing: 0.04em;
+      padding: 20px 44px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      max-width: 520px;
+      box-shadow:
+        0 8px 32px rgba(255,94,0,0.45),
+        0 2px 8px rgba(0,0,0,0.3);
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta-btn:hover {
+      background: var(--orange-hot);
+      transform: translateY(-2px);
+      box-shadow: 0 14px 44px rgba(255,94,0,0.55), 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .cta-btn:active { transform: translateY(0); }
+
+    .cta-btn svg { width: 24px; height: 24px; fill: #fff; flex-shrink: 0; }
+
+    .cta-sub {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .cta-sub svg { width: 14px; height: 14px; fill: #4caf80; flex-shrink: 0; }
+
+    /* ─── SOCIAL PROOF ───────────────────────────────────────── */
+    .social-proof {
+      max-width: var(--max);
+      margin: 52px auto 0;
+      padding: 0 20px;
+      animation: fadeUp 0.7s 0.6s ease both;
+    }
+
+    .proof-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    .proof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+
+    .proof-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      position: relative;
+    }
+
+    .proof-card::before {
+      content: '"';
+      font-family: Georgia, serif;
+      font-size: 72px;
+      line-height: 1;
+      color: var(--orange);
+      opacity: 0.25;
+      position: absolute;
+      top: 6px;
+      left: 12px;
+    }
+
+    .proof-stars {
+      color: var(--orange);
+      font-size: 13px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .proof-text {
+      font-size: 14px;
+      color: #ccc;
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .proof-author {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .proof-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange), #ff2200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .proof-name { font-weight: 700; font-size: 14px; }
+    .proof-role { font-size: 12px; color: var(--muted); }
+
+    /* ─── STATS ROW ──────────────────────────────────────────── */
+    .stats {
+      max-width: var(--max);
+      margin: 48px auto 0;
+      padding: 0 20px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      background: var(--card);
+      overflow: hidden;
+      animation: fadeUp 0.7s 0.7s ease both;
+    }
+
+    .stat {
+      flex: 1;
+      text-align: center;
+      padding: 24px 16px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat:last-child { border-right: none; }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 6vw, 48px);
+      color: var(--orange);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─── SECOND CTA ─────────────────────────────────────────── */
+    .second-cta {
+      max-width: var(--max);
+      margin: 52px auto;
+      padding: 0 20px;
+      text-align: center;
+      animation: fadeUp 0.7s 0.8s ease both;
+    }
+
+    .second-cta h2 {
+      font-family: var(--font-display);
+      font-size: clamp(30px, 6vw, 52px);
+      line-height: 1.08;
+      margin-bottom: 16px;
+    }
+    .second-cta h2 em { font-style: normal; color: var(--orange); }
+
+    .second-cta p {
+      color: #bbb;
+      max-width: 480px;
+      margin: 0 auto 32px;
+      font-size: 16px;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 12px;
+      color: #555;
+    }
+    footer a { color: #666; text-decoration: none; }
+    footer a:hover { color: var(--muted); }
+
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 10px rgba(255,94,0,0.2), 0 0 0 22px rgba(255,94,0,0.08); }
+      50%       { box-shadow: 0 0 0 16px rgba(255,94,0,0.15), 0 0 0 32px rgba(255,94,0,0.04); }
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      .proof-grid { grid-template-columns: 1fr; }
+      .stats { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
+      .stat:last-child { border-bottom: none; }
+      .cta-btn { padding: 18px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    🔥 <span>Atención entrenadores:</span> mira este video hasta el final antes de cerrar esta página
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">Método exclusivo para coaches de gimnasio</div>
+    <h1>Consigue <em>más clientes</em><br>sin perseguir a nadie</h1>
+    <p class="hero-sub">
+      El sistema que usamos para ayudar a entrenadores como tú a <strong>duplicar su cartera de clientes</strong> en 90 días — sin invertir en publicidad cara.
+    </p>
+  </section>
+
+  <!-- VIDEO -->
+  <div class="video-wrap">
+    <div class="video-outer" id="videoOuter">
+      <div class="video-ratio">
+
+        <!-- Thumbnail placeholder (shown before play) -->
+        <div class="video-thumb" id="videoThumb">
+          <div class="thumb-inner">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          </div>
+        </div>
+
+        <!-- The video element — src: reemplaza con tu video real -->
+        <video
+          id="mainVideo"
+          playsinline
+          preload="metadata"
+          disablePictureInPicture
+          controlsList="nodownload nofullscreen noremoteplayback"
+          oncontextmenu="return false;"
+        >
+          <!-- Reemplaza esta URL con tu video real -->
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+          Tu navegador no soporta video HTML5.
+        </video>
+
+        <!-- Big play overlay -->
+        <div class="play-overlay" id="playOverlay">
+          <div class="play-big-btn">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span class="play-label">Ver el video ahora</span>
+        </div>
+
+        <!-- Custom controls -->
+        <div class="video-controls" id="videoControls">
+          <button class="btn-play" id="btnPlay" aria-label="Play/Pause">
+            <svg viewBox="0 0 24 24" id="iconPlay"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+
+          <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+
+          <span class="video-time" id="videoTime">0:00 / 0:00</span>
+
+          <button class="btn-vol" id="btnVol" aria-label="Silenciar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="iconVol">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- BELOW VIDEO -->
+  <div class="below-video">
+    <p class="video-caption">🔒 Video exclusivo · Solo disponible en esta página</p>
+
+    <!-- PRIMARY CTA -->
+    <div class="cta-wrap">
+      <a href="#contacto" class="cta-btn" id="ctaBtn">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
+        QUIERO MÁS CLIENTES AHORA
+      </a>
+      <p class="cta-sub">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Sin compromisos · Consulta gratuita de 30 min
+      </p>
+    </div>
+  </div>
+
+  <!-- SOCIAL PROOF -->
+  <div class="social-proof">
+    <p class="proof-label">Lo que dicen nuestros entrenadores</p>
+    <div class="proof-grid">
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <p class="proof-text">En 2 meses pasé de 8 a 21 clientes. El sistema es claro, directo y funciona de verdad.</p>
+        <div class="proof-author">
+          <div class="proof-avatar">C</div>
+          <div>
+            <div class="proof-name">Carlos M.</div>
+            <div class="proof-role">Entrenador personal, Lima</div>
+          </div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <p class="proof-text">Pensé que era más de lo mismo. Pero en la primera semana ya tenía 3 consultas nuevas agendadas.</p>
+        <div class="proof-author">
+          <div class="proof-avatar">S</div>
+          <div>
+            <div class="proof-name">Sofía R.</div>
+            <div class="proof-role">Coach fitness online</div>
+          </div>
+        </div>
+      </div>
+      <div class="proof-card">
+        <div class="proof-stars">★★★★★</div>
+        <p class="proof-text">Mis ingresos subieron un 180% en 90 días. No lo creía posible siendo solo entrenador de gimnasio.</p>
+        <div class="proof-author">
+          <div class="proof-avatar">A</div>
+          <div>
+            <div class="proof-name">Alejandro V.</div>
+            <div class="proof-role">Head coach, Trujillo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">+340</div>
+      <div class="stat-label">Entrenadores formados</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">90</div>
+      <div class="stat-label">Días al resultado</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">2.4×</div>
+      <div class="stat-label">Clientes en promedio</div>
+    </div>
+  </div>
+
+  <!-- SECOND CTA -->
+  <div class="second-cta" id="contacto">
+    <h2>¿Listo para <em>llenar tu agenda</em> de clientes?</h2>
+    <p>Agenda tu llamada gratuita hoy. Cupos limitados cada semana.</p>
+    <a href="#" class="cta-btn" style="max-width: 520px; margin: 0 auto;">
+      <svg viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.12-.24 11.36 11.36 0 003.56.56 1 1 0 011 1v3.61a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.62a1 1 0 011 1 11.36 11.36 0 00.56 3.56 1 1 0 01-.24 1.12z"/></svg>
+      AGENDAR LLAMADA GRATUITA
+    </a>
+    <p class="cta-sub" style="margin-top: 14px;">
+      <svg viewBox="0 0 24 24" fill="#4caf80"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      100% gratis · Sin tarjeta de crédito
+    </p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 FitCoach Pro · <a href="#">Privacidad</a> · <a href="#">Términos</a> · Todos los derechos reservados</p>
+    <p style="margin-top: 6px;">Los resultados individuales pueden variar.</p>
+  </footer>
+
+  <script>
+    /* ─── VIDEO PLAYER ───────────────────────────────────────── */
+    const video       = document.getElementById('mainVideo');
+    const playOverlay = document.getElementById('playOverlay');
+    const videoThumb  = document.getElementById('videoThumb');
+    const btnPlay     = document.getElementById('btnPlay');
+    const iconPlay    = document.getElementById('iconPlay');
+    const progressFill= document.getElementById('progressFill');
+    const videoTime   = document.getElementById('videoTime');
+    const btnVol      = document.getElementById('btnVol');
+    const videoOuter  = document.getElementById('videoOuter');
+
+    // SVG paths
+    const SVG_PLAY  = 'M8 5v14l11-7z';
+    const SVG_PAUSE = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
+    const SVG_VOL_ON  = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+    const SVG_VOL_OFF = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+
+    // Disable seeking
+    let lastValidTime = 0;
+    let isPlaying = false;
+
+    video.addEventListener('timeupdate', () => {
+      // Prevent seeking forward beyond what has played
+      if (video.currentTime > lastValidTime + 1.5) {
+        video.currentTime = lastValidTime;
+      } else {
+        lastValidTime = video.currentTime;
+      }
+
+      // Update progress bar
+      if (video.duration) {
+        const pct = (video.currentTime / video.duration) * 100;
+        progressFill.style.width = pct + '%';
+      }
+
+      // Update time display
+      videoTime.textContent = formatTime(video.currentTime) + ' / ' + formatTime(video.duration || 0);
+    });
+
+    // Block seeking via seeking event
+    video.addEventListener('seeking', () => {
+      if (Math.abs(video.currentTime - lastValidTime) > 2) {
+        video.currentTime = lastValidTime;
+      }
+    });
+
+    // Prevent keyboard shortcuts for seeking
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement === video || videoOuter.contains(document.activeElement)) {
+        if (['ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
+      }
+    });
+
+    function formatTime(s) {
+      s = Math.floor(s) || 0;
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return m + ':' + String(sec).padStart(2, '0');
+    }
+
+    // Play/pause toggle
+    function togglePlay() {
+      if (video.paused) {
+        video.play();
+        isPlaying = true;
+        iconPlay.setAttribute('d', SVG_PAUSE);
+        playOverlay.classList.add('hidden');
+        videoThumb.style.display = 'none';
+      } else {
+        video.pause();
+        isPlaying = false;
+        iconPlay.setAttribute('d', SVG_PLAY);
+      }
+    }
+
+    playOverlay.addEventListener('click', togglePlay);
+    btnPlay.addEventListener('click', togglePlay);
+
+    video.addEventListener('ended', () => {
+      isPlaying = false;
+      iconPlay.setAttribute('d', SVG_PLAY);
+    });
+
+    // Volume toggle
+    const iconVol = document.getElementById('iconVol');
+    btnVol.addEventListener('click', () => {
+      video.muted = !video.muted;
+      iconVol.innerHTML = video.muted ? SVG_VOL_OFF : SVG_VOL_ON;
+    });
+
+    // Auto-hide controls
+    let hideTimer;
+    videoOuter.addEventListener('mousemove', () => {
+      videoOuter.classList.add('show-controls');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => videoOuter.classList.remove('show-controls'), 2500);
+    });
+    videoOuter.addEventListener('mouseleave', () => {
+      clearTimeout(hideTimer);
+      videoOuter.classList.remove('show-controls');
+    });
+
+    // Disable right-click context menu on video
+    video.addEventListener('contextmenu', e => e.preventDefault());
+
+    /* ─── CTA PULSE after video watch time ─────────────────── */
+    // Show CTA button pulsing after 30 seconds of playback
+    video.addEventListener('timeupdate', () => {
+      if (video.currentTime > 30) {
+        document.getElementById('ctaBtn').style.animation = 'pulse 1.8s ease infinite';
+      }
+    });
+
+    /* ─── COUNTER ANIMATION ──────────────────────────────────── */
+    function animateCount(el, target, suffix = '') {
+      let start = 0;
+      const duration = 1800;
+      const step = (timestamp) => {
+        if (!step.startTime) step.startTime = timestamp;
+        const progress = Math.min((timestamp - step.startTime) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const val = Math.round(eased * target);
+        el.textContent = '+' + val + suffix;
+        if (progress < 1) requestAnimationFrame(step);
+        else el.textContent = (target > 10 ? '+' : '') + target + suffix;
+      };
+      requestAnimationFrame(step);
+    }
+
+    // Intersection observer for stats
+    const statNums = document.querySelectorAll('.stat-num');
+    const statsObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const el = entry.target;
+          const text = el.textContent;
+          if (text.includes('340')) animateCount(el, 340, '');
+          if (text.includes('90'))  { let s = 0; const t = setInterval(() => { el.textContent = ++s; if(s===90) clearInterval(t); }, 20); }
+          if (text.includes('2.4')) { let s = 0; const t = setInterval(() => { el.textContent = (s/10).toFixed(1)+'×'; s++; if(s===24) clearInterval(t); }, 75); }
+          statsObs.unobserve(el);
+        }
+      });
+    }, { threshold: 0.5 });
+    statNums.forEach(n => statsObs.observe(n));
+  </script>
+
+</body>
+</html>

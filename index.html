@@ -127,27 +127,20 @@
         0 0 60px rgba(255,94,0,0.08);
     }
 
-    /* 16:9 ratio */
-    .video-ratio {
+    .video-container {
       position: relative;
       width: 100%;
-      padding-bottom: 56.25%;
+      background: #000;
     }
 
-    video {
-      position: absolute;
-      inset: 0;
+    .video-container video {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: auto;
       display: block;
-      /* disable right-click download */
-      -webkit-user-select: none;
-      user-select: none;
     }
 
     /* Custom controls overlay */
-    .video-controls {
+    .custom-controls {
       position: absolute;
       bottom: 0;
       left: 0;
@@ -159,12 +152,12 @@
       gap: 12px;
       z-index: 10;
       transition: opacity 0.3s;
+      opacity: 0;
     }
 
-    .video-outer:hover .video-controls,
-    .video-outer.show-controls .video-controls { opacity: 1; }
+    .video-outer:hover .custom-controls,
+    .video-outer.show-controls .custom-controls { opacity: 1; }
 
-    /* Play/pause btn */
     .btn-play {
       width: 38px;
       height: 38px;
@@ -181,7 +174,6 @@
     .btn-play:hover { background: var(--orange-hot); transform: scale(1.08); }
     .btn-play svg { width: 14px; height: 14px; fill: #fff; }
 
-    /* Progress bar */
     .progress-track {
       flex: 1;
       height: 4px;
@@ -189,18 +181,18 @@
       border-radius: 4px;
       position: relative;
       overflow: hidden;
-      /* DISABLE seeking via pointer events — JS also blocks it */
-      pointer-events: none;
+      cursor: pointer;
+      pointer-events: auto;
     }
     .progress-fill {
       height: 100%;
       background: var(--orange);
       border-radius: 4px;
       width: 0%;
-      transition: width 0.3s linear;
+      transition: width 0.1s linear;
+      pointer-events: none;
     }
 
-    /* Time */
     .video-time {
       font-size: 12px;
       color: rgba(255,255,255,0.7);
@@ -208,7 +200,6 @@
       white-space: nowrap;
     }
 
-    /* Volume btn */
     .btn-vol {
       background: none;
       border: none;
@@ -222,7 +213,6 @@
     .btn-vol:hover { color: #fff; }
     .btn-vol svg { width: 20px; height: 20px; }
 
-    /* Big play overlay (before first play) */
     .play-overlay {
       position: absolute;
       inset: 0;
@@ -262,12 +252,10 @@
       text-shadow: 0 2px 8px rgba(0,0,0,0.6);
     }
 
-    /* Thumbnail / poster placeholder */
     .video-thumb {
       position: absolute;
       inset: 0;
-      background:
-        linear-gradient(160deg, #1a1a1a 0%, #0d0d0d 100%);
+      background: linear-gradient(160deg, #1a1a1a 0%, #0d0d0d 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -279,6 +267,23 @@
     }
     .video-thumb .thumb-inner svg {
       width: 64px; height: 64px; fill: none; stroke: #fff; stroke-width: 1.2;
+    }
+
+    /* Watermark */
+    .watermark {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      background: rgba(0,0,0,0.5);
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: #fff;
+      z-index: 15;
+      pointer-events: none;
     }
 
     /* ─── BELOW VIDEO ────────────────────────────────────────── */
@@ -317,9 +322,7 @@
       cursor: pointer;
       width: 100%;
       max-width: 520px;
-      box-shadow:
-        0 8px 32px rgba(255,94,0,0.45),
-        0 2px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 32px rgba(255,94,0,0.45), 0 2px 8px rgba(0,0,0,0.3);
       transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
       position: relative;
       overflow: hidden;
@@ -353,7 +356,7 @@
     }
     .cta-sub svg { width: 14px; height: 14px; fill: #4caf80; flex-shrink: 0; }
 
-    /* ─── SOCIAL PROOF ───────────────────────────────────────── */
+    /* ─── VIDEO TESTIMONIALS (2) ─────────────────────────────── */
     .social-proof {
       max-width: var(--max);
       margin: 52px auto 0;
@@ -373,7 +376,7 @@
 
     .proof-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 14px;
     }
 
@@ -404,11 +407,28 @@
       letter-spacing: 2px;
     }
 
-    .proof-text {
-      font-size: 14px;
-      color: #ccc;
-      line-height: 1.55;
+    .testimonial-video {
+      position: relative;
+      width: 100%;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
       margin-bottom: 14px;
+    }
+
+    .testimonial-video video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+    }
+
+    .testimonial-video .watermark {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 10px;
+      padding: 3px 10px;
     }
 
     .proof-author {
@@ -507,35 +527,32 @@
     footer a { color: #666; text-decoration: none; }
     footer a:hover { color: var(--muted); }
 
-    /* ─── ANIMATIONS ─────────────────────────────────────────── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 10px rgba(255,94,0,0.2), 0 0 0 22px rgba(255,94,0,0.08); }
-      50%       { box-shadow: 0 0 0 16px rgba(255,94,0,0.15), 0 0 0 32px rgba(255,94,0,0.04); }
+      50% { box-shadow: 0 0 0 16px rgba(255,94,0,0.15), 0 0 0 32px rgba(255,94,0,0.04); }
     }
 
-    /* ─── RESPONSIVE ─────────────────────────────────────────── */
     @media (max-width: 520px) {
       .proof-grid { grid-template-columns: 1fr; }
       .stats { flex-direction: column; }
       .stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); }
       .stat:last-child { border-bottom: none; }
       .cta-btn { padding: 18px 24px; }
+      .watermark { font-size: 10px; top: 8px; right: 12px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP BAR -->
   <div class="topbar">
     🔥 <span>Atención entrenadores:</span> mira este video hasta el final antes de cerrar esta página
   </div>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-tag">Método exclusivo para coaches de gimnasio</div>
     <h1>Consigue <em>más clientes</em><br>sin perseguir a nadie</h1>
@@ -544,19 +561,15 @@
     </p>
   </section>
 
-  <!-- VIDEO -->
+  <!-- VIDEO PRINCIPAL -->
   <div class="video-wrap">
     <div class="video-outer" id="videoOuter">
-      <div class="video-ratio">
-
-        <!-- Thumbnail placeholder (shown before play) -->
+      <div class="video-container">
         <div class="video-thumb" id="videoThumb">
           <div class="thumb-inner">
             <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M10 8l6 4-6 4V8z"/></svg>
           </div>
         </div>
-
-        <!-- The video element — src: reemplaza con tu video real -->
         <video
           id="mainVideo"
           playsinline
@@ -565,49 +578,37 @@
           controlsList="nodownload nofullscreen noremoteplayback"
           oncontextmenu="return false;"
         >
-          <!-- Reemplaza esta URL con tu video real -->
-          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-          Tu navegador no soporta video HTML5.
+          <source src="assets/3195943-uhd_3840_2160_25fps.mp4" type="video/mp4" />
         </video>
-
-        <!-- Big play overlay -->
+        <!-- <div class="watermark">Diego Saldaña</div> -->
         <div class="play-overlay" id="playOverlay">
           <div class="play-big-btn">
             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
           </div>
           <span class="play-label">Ver el video ahora</span>
         </div>
-
-        <!-- Custom controls -->
-        <div class="video-controls" id="videoControls">
-          <button class="btn-play" id="btnPlay" aria-label="Play/Pause">
+        <div class="custom-controls" id="customControls">
+          <button class="btn-play" id="btnPlay">
             <svg viewBox="0 0 24 24" id="iconPlay"><path d="M8 5v14l11-7z"/></svg>
           </button>
-
-          <div class="progress-track">
+          <div class="progress-track" id="progressTrack">
             <div class="progress-fill" id="progressFill"></div>
           </div>
-
           <span class="video-time" id="videoTime">0:00 / 0:00</span>
-
-          <button class="btn-vol" id="btnVol" aria-label="Silenciar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="iconVol">
+          <button class="btn-vol" id="btnVol">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
               <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
             </svg>
           </button>
         </div>
-
       </div>
     </div>
   </div>
 
-  <!-- BELOW VIDEO -->
   <div class="below-video">
     <p class="video-caption">🔒 Video exclusivo · Solo disponible en esta página</p>
-
-    <!-- PRIMARY CTA -->
     <div class="cta-wrap">
       <a href="#contacto" class="cta-btn" id="ctaBtn">
         <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9z"/></svg>
@@ -620,13 +621,19 @@
     </div>
   </div>
 
-  <!-- SOCIAL PROOF -->
+  <!-- VIDEO TESTIMONIALS (2) -->
   <div class="social-proof">
-    <p class="proof-label">Lo que dicen nuestros entrenadores</p>
+    <p class="proof-label">Resultados reales de entrenadores como tú</p>
     <div class="proof-grid">
+      
       <div class="proof-card">
         <div class="proof-stars">★★★★★</div>
-        <p class="proof-text">En 2 meses pasé de 8 a 21 clientes. El sistema es claro, directo y funciona de verdad.</p>
+        <div class="testimonial-video">
+          <video controls playsinline preload="metadata" disablePictureInPicture controlsList="nodownload nofullscreen" oncontextmenu="return false;">
+            <source src="assets/3195943-uhd_3840_2160_25fps.mp4" type="video/mp4">
+          </video>
+          <!-- <div class="watermark">Diego Saldaña</div> -->
+        </div>
         <div class="proof-author">
           <div class="proof-avatar">C</div>
           <div>
@@ -635,9 +642,15 @@
           </div>
         </div>
       </div>
+
       <div class="proof-card">
         <div class="proof-stars">★★★★★</div>
-        <p class="proof-text">Pensé que era más de lo mismo. Pero en la primera semana ya tenía 3 consultas nuevas agendadas.</p>
+        <div class="testimonial-video">
+          <video controls playsinline preload="metadata" disablePictureInPicture controlsList="nodownload nofullscreen" oncontextmenu="return false;">
+            <source src="assets/3195943-uhd_3840_2160_25fps.mp4" type="video/mp4">
+          </video>
+          <!-- <div class="watermark">Diego Saldaña</div> -->
+        </div>
         <div class="proof-author">
           <div class="proof-avatar">S</div>
           <div>
@@ -646,37 +659,16 @@
           </div>
         </div>
       </div>
-      <div class="proof-card">
-        <div class="proof-stars">★★★★★</div>
-        <p class="proof-text">Mis ingresos subieron un 180% en 90 días. No lo creía posible siendo solo entrenador de gimnasio.</p>
-        <div class="proof-author">
-          <div class="proof-avatar">A</div>
-          <div>
-            <div class="proof-name">Alejandro V.</div>
-            <div class="proof-role">Head coach, Trujillo</div>
-          </div>
-        </div>
-      </div>
+
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats">
-    <div class="stat">
-      <div class="stat-num">+340</div>
-      <div class="stat-label">Entrenadores formados</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">90</div>
-      <div class="stat-label">Días al resultado</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">2.4×</div>
-      <div class="stat-label">Clientes en promedio</div>
-    </div>
+    <div class="stat"><div class="stat-num">+340</div><div class="stat-label">Entrenadores formados</div></div>
+    <div class="stat"><div class="stat-num">90</div><div class="stat-label">Días al resultado</div></div>
+    <div class="stat"><div class="stat-num">2.4×</div><div class="stat-label">Clientes en promedio</div></div>
   </div>
 
-  <!-- SECOND CTA -->
   <div class="second-cta" id="contacto">
     <h2>¿Listo para <em>llenar tu agenda</em> de clientes?</h2>
     <p>Agenda tu llamada gratuita hoy. Cupos limitados cada semana.</p>
@@ -684,71 +676,29 @@
       <svg viewBox="0 0 24 24" fill="#fff"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2a1 1 0 011.12-.24 11.36 11.36 0 003.56.56 1 1 0 011 1v3.61a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.62a1 1 0 011 1 11.36 11.36 0 00.56 3.56 1 1 0 01-.24 1.12z"/></svg>
       AGENDAR LLAMADA GRATUITA
     </a>
-    <p class="cta-sub" style="margin-top: 14px;">
-      <svg viewBox="0 0 24 24" fill="#4caf80"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      100% gratis · Sin tarjeta de crédito
-    </p>
+    <p class="cta-sub" style="margin-top: 14px;">100% gratis · Sin tarjeta de crédito</p>
   </div>
 
-  <!-- FOOTER -->
   <footer>
     <p>© 2025 FitCoach Pro · <a href="#">Privacidad</a> · <a href="#">Términos</a> · Todos los derechos reservados</p>
     <p style="margin-top: 6px;">Los resultados individuales pueden variar.</p>
   </footer>
 
   <script>
-    /* ─── VIDEO PLAYER ───────────────────────────────────────── */
-    const video       = document.getElementById('mainVideo');
+    const video = document.getElementById('mainVideo');
     const playOverlay = document.getElementById('playOverlay');
-    const videoThumb  = document.getElementById('videoThumb');
-    const btnPlay     = document.getElementById('btnPlay');
-    const iconPlay    = document.getElementById('iconPlay');
-    const progressFill= document.getElementById('progressFill');
-    const videoTime   = document.getElementById('videoTime');
-    const btnVol      = document.getElementById('btnVol');
-    const videoOuter  = document.getElementById('videoOuter');
+    const videoThumb = document.getElementById('videoThumb');
+    const btnPlay = document.getElementById('btnPlay');
+    const iconPlay = document.getElementById('iconPlay');
+    const progressFill = document.getElementById('progressFill');
+    const videoTime = document.getElementById('videoTime');
+    const btnVol = document.getElementById('btnVol');
+    const videoOuter = document.getElementById('videoOuter');
+    const progressTrack = document.getElementById('progressTrack');
 
-    // SVG paths
-    const SVG_PLAY  = 'M8 5v14l11-7z';
+    const SVG_PLAY = 'M8 5v14l11-7z';
     const SVG_PAUSE = 'M6 19h4V5H6v14zm8-14v14h4V5h-4z';
-    const SVG_VOL_ON  = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
-    const SVG_VOL_OFF = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
-
-    // Disable seeking
-    let lastValidTime = 0;
     let isPlaying = false;
-
-    video.addEventListener('timeupdate', () => {
-      // Prevent seeking forward beyond what has played
-      if (video.currentTime > lastValidTime + 1.5) {
-        video.currentTime = lastValidTime;
-      } else {
-        lastValidTime = video.currentTime;
-      }
-
-      // Update progress bar
-      if (video.duration) {
-        const pct = (video.currentTime / video.duration) * 100;
-        progressFill.style.width = pct + '%';
-      }
-
-      // Update time display
-      videoTime.textContent = formatTime(video.currentTime) + ' / ' + formatTime(video.duration || 0);
-    });
-
-    // Block seeking via seeking event
-    video.addEventListener('seeking', () => {
-      if (Math.abs(video.currentTime - lastValidTime) > 2) {
-        video.currentTime = lastValidTime;
-      }
-    });
-
-    // Prevent keyboard shortcuts for seeking
-    document.addEventListener('keydown', (e) => {
-      if (document.activeElement === video || videoOuter.contains(document.activeElement)) {
-        if (['ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
-      }
-    });
 
     function formatTime(s) {
       s = Math.floor(s) || 0;
@@ -757,17 +707,25 @@
       return m + ':' + String(sec).padStart(2, '0');
     }
 
-    // Play/pause toggle
+    function updateProgress() {
+      if (video.duration) {
+        const pct = (video.currentTime / video.duration) * 100;
+        progressFill.style.width = pct + '%';
+      }
+      videoTime.textContent = formatTime(video.currentTime) + ' / ' + formatTime(video.duration || 0);
+    }
+
+    video.addEventListener('timeupdate', updateProgress);
+    video.addEventListener('loadedmetadata', updateProgress);
+
     function togglePlay() {
       if (video.paused) {
         video.play();
-        isPlaying = true;
         iconPlay.setAttribute('d', SVG_PAUSE);
         playOverlay.classList.add('hidden');
-        videoThumb.style.display = 'none';
+        if (videoThumb) videoThumb.style.display = 'none';
       } else {
         video.pause();
-        isPlaying = false;
         iconPlay.setAttribute('d', SVG_PLAY);
       }
     }
@@ -776,15 +734,12 @@
     btnPlay.addEventListener('click', togglePlay);
 
     video.addEventListener('ended', () => {
-      isPlaying = false;
       iconPlay.setAttribute('d', SVG_PLAY);
     });
 
-    // Volume toggle
-    const iconVol = document.getElementById('iconVol');
+    // Volumen
     btnVol.addEventListener('click', () => {
       video.muted = !video.muted;
-      iconVol.innerHTML = video.muted ? SVG_VOL_OFF : SVG_VOL_ON;
     });
 
     // Auto-hide controls
@@ -799,18 +754,18 @@
       videoOuter.classList.remove('show-controls');
     });
 
-    // Disable right-click context menu on video
-    video.addEventListener('contextmenu', e => e.preventDefault());
+    // Barra de progreso clickeable (seeking) - DESACTIVADO: no se puede adelantar
+    // El usuario no puede hacer clic en la barra para adelantar porque está deshabilitado
+    progressTrack.style.pointerEvents = 'none';
 
-    /* ─── CTA PULSE after video watch time ─────────────────── */
-    // Show CTA button pulsing after 30 seconds of playback
+    // Pulse CTA después de 30 segundos
     video.addEventListener('timeupdate', () => {
       if (video.currentTime > 30) {
         document.getElementById('ctaBtn').style.animation = 'pulse 1.8s ease infinite';
       }
     });
 
-    /* ─── COUNTER ANIMATION ──────────────────────────────────── */
+    // Contadores
     function animateCount(el, target, suffix = '') {
       let start = 0;
       const duration = 1800;
@@ -819,14 +774,13 @@
         const progress = Math.min((timestamp - step.startTime) / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         const val = Math.round(eased * target);
-        el.textContent = '+' + val + suffix;
+        el.textContent = (target > 10 ? '+' : '') + val + suffix;
         if (progress < 1) requestAnimationFrame(step);
         else el.textContent = (target > 10 ? '+' : '') + target + suffix;
       };
       requestAnimationFrame(step);
     }
 
-    // Intersection observer for stats
     const statNums = document.querySelectorAll('.stat-num');
     const statsObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -834,7 +788,7 @@
           const el = entry.target;
           const text = el.textContent;
           if (text.includes('340')) animateCount(el, 340, '');
-          if (text.includes('90'))  { let s = 0; const t = setInterval(() => { el.textContent = ++s; if(s===90) clearInterval(t); }, 20); }
+          if (text.includes('90')) { let s = 0; const t = setInterval(() => { el.textContent = ++s; if(s===90) clearInterval(t); }, 20); }
           if (text.includes('2.4')) { let s = 0; const t = setInterval(() => { el.textContent = (s/10).toFixed(1)+'×'; s++; if(s===24) clearInterval(t); }, 75); }
           statsObs.unobserve(el);
         }
@@ -842,6 +796,5 @@
     }, { threshold: 0.5 });
     statNums.forEach(n => statsObs.observe(n));
   </script>
-
 </body>
 </html>

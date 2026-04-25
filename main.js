@@ -25,12 +25,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   animatedEls.forEach(el => observer.observe(el));
 
+  // ─── FAQ ACCORDION ────────────────────────────────────────────────────
+  const faqItems = document.querySelectorAll('.faq__item');
+
+  faqItems.forEach(item => {
+    const btn = item.querySelector('.faq__question');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('is-open');
+
+      // Close all open items first
+      faqItems.forEach(i => {
+        i.classList.remove('is-open');
+        i.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
+      });
+
+      // Toggle the clicked one
+      if (!isOpen) {
+        item.classList.add('is-open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
+    });
+  });
+
   // ─── VIDEO PLACEHOLDERS (click to embed) ─────────────────────────────
   const videoPlaceholders = document.querySelectorAll('.video-placeholder');
   videoPlaceholders.forEach(placeholder => {
     placeholder.addEventListener('click', () => {
-      // In production, replace with actual video embed URL
-      // e.g. YouTube: https://www.youtube.com/embed/VIDEO_ID?autoplay=1
+      // Replace VIDEO_ID with your actual YouTube video ID
+      // e.g. https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1
       const iframe = document.createElement('iframe');
       iframe.setAttribute('src', 'https://www.youtube.com/embed/?autoplay=1');
       iframe.setAttribute('frameborder', '0');
@@ -70,8 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const step = (now) => {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
-      // Ease out cubic
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased = 1 - Math.pow(1 - progress, 3); // ease out cubic
       const current = Math.round(eased * target);
       el.textContent = prefix + current + suffix;
       if (progress < 1) requestAnimationFrame(step);
@@ -111,15 +132,5 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.style.setProperty('--glow-intensity', '0');
     });
   });
-
-  // ─── URGENCY BAR MARQUEE (on mobile) ─────────────────────────────────
-  const isMobile = window.innerWidth < 640;
-  if (isMobile) {
-    const bar = document.querySelector('.urgency-bar__inner');
-    if (bar) {
-      bar.style.overflow = 'hidden';
-      bar.style.whiteSpace = 'nowrap';
-    }
-  }
 
 });

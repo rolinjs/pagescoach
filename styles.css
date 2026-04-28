@@ -52,6 +52,72 @@ a { text-decoration: none; color: inherit; }
 .gold { color: var(--acento-principal); }
 
 /* ============================================
+   WATERMARK
+   ============================================ */
+
+.watermark {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  user-select: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  align-items: center;
+  justify-items: center;
+  overflow: hidden;
+}
+
+.watermark span {
+  font-family: var(--font-heading);
+  font-weight: 900;
+  font-size: clamp(1rem, 3vw, 1.5rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.07);
+  transform: rotate(-35deg);
+  white-space: nowrap;
+}
+
+/* ============================================
+   YOUTUBE EMBED
+   ============================================ */
+
+.yt-embed-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.yt-embed-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: inherit;
+}
+
+.yt-embed-container--testimonial {
+  border-radius: 0;
+}
+
+/* Texto bajo el video principal */
+.video-overlay-text {
+  position: relative;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+}
+
+/* ============================================
    URGENCY BAR — FIXED MOBILE
    ============================================ */
 
@@ -83,13 +149,11 @@ a { text-decoration: none; color: inherit; }
 .urgency-bar p {
   font-family: var(--font-heading);
   font-weight: 800;
-  /* FIXED: use a fluid clamp that never goes below a readable size */
   font-size: clamp(0.55rem, 2.2vw, 0.82rem);
   letter-spacing: 0.06em;
   color: #0F1B3D;
   text-transform: uppercase;
   line-height: 1.35;
-  /* allow wrapping on very small screens so text stays visible */
   white-space: normal;
   word-break: break-word;
   min-width: 0;
@@ -249,72 +313,6 @@ a { text-decoration: none; color: inherit; }
     0 0 0 1px rgba(201, 146, 10, 0.1),
     0 20px 60px rgba(0,0,0,0.5),
     0 0 80px rgba(201, 146, 10, 0.1);
-}
-
-.video-placeholder {
-  position: relative;
-  background: linear-gradient(135deg, #0A1530 0%, #122060 50%, #0A1530 100%);
-  aspect-ratio: 16/9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.video-placeholder::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, rgba(201,146,10,0.08) 0%, transparent 70%);
-}
-
-.video-placeholder:hover .video-play-btn__circle {
-  transform: scale(1.08);
-  box-shadow: 0 0 40px rgba(201,146,10,0.5);
-}
-
-.video-play-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  z-index: 1;
-}
-
-.video-play-btn__circle {
-  width: 80px; height: 80px;
-  background: linear-gradient(135deg, var(--acento-principal), var(--acento-brillante));
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  transition: var(--transition);
-  box-shadow: 0 0 30px rgba(201,146,10,0.4);
-}
-
-.video-play-btn__circle svg {
-  width: 28px; height: 28px;
-  color: #0F1B3D;
-  margin-left: 4px;
-}
-
-.video-play-btn span {
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-  color: var(--texto-principal);
-  text-transform: uppercase;
-}
-
-.video-overlay-text {
-  position: absolute;
-  bottom: 16px; left: 0; right: 0;
-  text-align: center;
-  font-size: 0.78rem;
-  color: var(--texto-secundario);
-  font-family: var(--font-body);
-  letter-spacing: 0.03em;
 }
 
 /* ============================================
@@ -500,45 +498,6 @@ a { text-decoration: none; color: inherit; }
 }
 
 .testimonial-card__video { position: relative; }
-
-.testimonial-video-placeholder {
-  background: linear-gradient(135deg, #081228 0%, #0E1F4A 100%);
-  aspect-ratio: 16/9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.testimonial-video-placeholder:hover .testimonial-play {
-  transform: scale(1.1);
-  box-shadow: 0 0 20px rgba(201,146,10,0.4);
-}
-
-.testimonial-play {
-  width: 52px; height: 52px;
-  background: linear-gradient(135deg, var(--acento-principal), var(--acento-brillante));
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  transition: var(--transition);
-  box-shadow: 0 0 20px rgba(201,146,10,0.3);
-}
-
-.testimonial-play svg {
-  width: 18px; height: 18px;
-  color: #0F1B3D;
-  margin-left: 3px;
-}
-
-.testimonial-label {
-  font-size: 0.72rem;
-  color: var(--texto-secundario);
-  font-family: var(--font-body);
-  letter-spacing: 0.04em;
-}
 
 .testimonial-card__body { padding: 24px; }
 
@@ -760,7 +719,6 @@ a { text-decoration: none; color: inherit; }
   letter-spacing: 0.02em;
 }
 
-/* Smaller variant for text-based values like "2-3 sem." */
 .number-value--small {
   font-size: clamp(2rem, 5vw, 3.5rem);
 }
@@ -1021,7 +979,6 @@ a { text-decoration: none; color: inherit; }
    ============================================ */
 
 @media (max-width: 640px) {
-  /* Urgency bar — text stays visible */
   .urgency-bar { padding: 9px 10px; }
   .urgency-bar__fire { font-size: 0.85rem; }
 
@@ -1060,8 +1017,7 @@ a { text-decoration: none; color: inherit; }
 
   .btn--xl { padding: 16px 28px; width: 100%; max-width: 360px; }
 
-  .video-play-btn__circle { width: 64px; height: 64px; }
-  .video-play-btn__circle svg { width: 22px; height: 22px; }
+  .watermark span { font-size: 0.75rem; }
 }
 
 /* ============================================
@@ -1070,7 +1026,53 @@ a { text-decoration: none; color: inherit; }
 
 @media (max-width: 400px) {
   .hero__title { font-size: 2rem; }
-  /* Urgency bar: hide emoji on truly tiny screens to save space */
   .urgency-bar__fire { display: none; }
   .urgency-bar p { font-size: 0.6rem; letter-spacing: 0.04em; }
+}
+/* Video overlay - texto dentro del video */
+.video-wrapper {
+  position: relative;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+  padding: 40px 20px 12px 20px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--texto-secundario);
+  font-family: var(--font-body);
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.video-overlay .lock-icon {
+  font-size: 0.7rem;
+  margin-right: 4px;
+}
+/* Mejorar la integración del video testimonial */
+.testimonial-card__video {
+  position: relative;
+  background: #000;
+}
+
+.testimonial-card__video::after {
+  content: "🎥 Testimonio real";
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  color: var(--acento-principal);
+  font-size: 0.6rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  z-index: 10;
+  pointer-events: none;
+  letter-spacing: 0.5px;
 }

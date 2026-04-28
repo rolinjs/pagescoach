@@ -11,6 +11,22 @@
 </head>
 <body>
 
+<!-- WATERMARK -->
+<div class="watermark" aria-hidden="true">
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+  <span>PÁGINA DE PRUEBA</span>
+</div>
+
 <!-- HEADER BAR -->
 <div class="urgency-bar">
   <div class="urgency-bar__inner">
@@ -44,20 +60,25 @@
       </p>
 
       <!-- VIDEO BLOCK -->
+      <!-- ====================================================
+           VIDEO PRINCIPAL: reemplaza YOUTUBE_VIDEO_ID_1 con el
+           ID de tu video de YouTube. Ej: dQw4w9WgXcQ
+           ==================================================== -->
       <div class="video-block" data-animate="fade-up" data-delay="300">
         <div class="video-wrapper">
-          <div class="video-placeholder">
-            <div class="video-play-btn">
-              <div class="video-play-btn__circle">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <polygon points="5,3 19,12 5,21" fill="currentColor"/>
-                </svg>
-              </div>
-              <span>VER EL VIDEO AHORA</span>
-            </div>
-            <div class="video-overlay-text">
-              <span class="lock-icon">🔒</span> Video exclusivo · Solo disponible en esta página
-            </div>
+          <div class="yt-embed-container" data-video-id="pWvE2gaE_JQ">
+            <iframe
+              src="https://www.youtube.com/embed/pWvE2gaE_JQ?controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+              title="Video principal CEO Creator"
+            ></iframe>
+          </div>
+          <!-- TEXTO DENTRO DEL VIDEO (overlay en la parte inferior) -->
+          <div class="video-overlay">
+            <span class="lock-icon">🔒</span> Video exclusivo · Solo disponible en esta página
           </div>
         </div>
       </div>
@@ -112,43 +133,55 @@
 
     <div class="testimonials__grid">
       <!-- Testimonio 1 -->
+      <!-- ====================================================
+           VIDEO TESTIMONIO 1: reemplaza YOUTUBE_VIDEO_ID_2 con
+           el ID del video. Ej: abc123XYZ
+           ==================================================== -->
       <div class="testimonial-card" data-animate="fade-up" data-delay="100">
-        <div class="testimonial-card__video">
-          <div class="testimonial-video-placeholder">
-            <div class="testimonial-play">
-              <svg viewBox="0 0 24 24" fill="none">
-                <polygon points="5,3 19,12 5,21" fill="currentColor"/>
-              </svg>
-            </div>
-            <div class="testimonial-label">Testimonio en video</div>
-          </div>
-        </div>
-        <div class="testimonial-card__body">
-          <div class="stars-row">⭐⭐⭐⭐⭐</div>
-          <blockquote class="testimonial-quote">
-            "Recuperé toda la inversión del programa con un solo cliente y conseguí 3 más con un solo video."
-          </blockquote>
-          <div class="testimonial-author">
-            <div class="testimonial-author__avatar">E</div>
-            <div>
-              <div class="testimonial-author__name">Esteban</div>
-              <div class="testimonial-author__title">Coach fitness online</div>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card__glow"></div>
+  <div class="testimonial-card__video">
+    <div class="yt-embed-container yt-embed-container--testimonial" data-video-id="DVtUftjfRzA">
+      <iframe
+        src="https://www.youtube.com/embed/DVtUftjfRzA?controls=0&modestbranding=1&rel=0&showinfo=0&iv_load_policy=3&color=white&autohide=1"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        loading="lazy"
+        title="Testimonio Esteban"
+      ></iframe>
+    </div>
+  </div>
+  <div class="testimonial-card__body">
+    <div class="stars-row">⭐⭐⭐⭐⭐</div>
+    <blockquote class="testimonial-quote">
+      "Recuperé toda la inversión del programa con un solo cliente y conseguí 3 más con un solo video."
+    </blockquote>
+    <div class="testimonial-author">
+      <div class="testimonial-author__avatar">E</div>
+      <div>
+        <div class="testimonial-author__name">Esteban</div>
+        <div class="testimonial-author__title">Coach fitness online</div>
       </div>
+    </div>
+  </div>
+  <div class="testimonial-card__glow"></div>
+</div>
 
       <!-- Testimonio 2 -->
+      <!-- ====================================================
+           VIDEO TESTIMONIO 2: reemplaza YOUTUBE_VIDEO_ID_3 con
+           el ID del video. Ej: xyz789ABC
+           ==================================================== -->
       <div class="testimonial-card" data-animate="fade-up" data-delay="200">
         <div class="testimonial-card__video">
-          <div class="testimonial-video-placeholder">
-            <div class="testimonial-play">
-              <svg viewBox="0 0 24 24" fill="none">
-                <polygon points="5,3 19,12 5,21" fill="currentColor"/>
-              </svg>
-            </div>
-            <div class="testimonial-label">Testimonio en video</div>
+          <div class="yt-embed-container yt-embed-container--testimonial" data-video-id="YOUTUBE_VIDEO_ID_3">
+            <iframe
+              src="https://www.youtube.com/embed/YOUTUBE_VIDEO_ID_3?rel=0&modestbranding=1"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+              title="Testimonio Diego Mírez"
+            ></iframe>
           </div>
         </div>
         <div class="testimonial-card__body">
